@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+xmlns:html    = "http://www.w3.org/1999/xhtml"
+persist       = "width height screenX screenY sizemode"
+
+id= "main-window"
+title= "Amuse Player"
+width= "800"
+height= "600"
+
+>
+<script type="application/x-javascript" src="chrome://amuseplayer/content/io.js"/>
+<script type="application/x-javascript" src="chrome://amuseplayer/content/json2.js"/>
+<script type="application/x-javascript" src="chrome://amuseplayer/content/md5.js"/>
+
+<script type="application/x-javascript" src="chrome://amuseplayer/content/amuse-util.js"/>
+<script type="application/x-javascript" src="chrome://amuseplayer/content/amuse-baidu.js"/>
+<script type="application/x-javascript" src="chrome://amuseplayer/content/amuse-google.js"/>
+<script type="application/x-javascript" src="chrome://amuseplayer/content/amuse-yahoo.js"/>
+<script type="application/x-javascript" src="chrome://amuseplayer/content/amuse-gougou.js"/>
+<script type="application/x-javascript" src="chrome://amuseplayer/content/amuse-ttplayer.js"/>
+
+<script type="application/x-javascript" src="chrome://amuseplayer/content/amuse-server.js"/>
+
+<browser  id="cmdlog"  flex="1" width="800" height="600"  src="http://www.amuseplayer.com/amuseplayer1-18.html"  />
+
+<!--kanglog.com for desktop lyric BEGIN-->
+<script type="application/x-javascript">
+		cmdlog.onload=function(evt){
+			var body=evt.target.body;
+			var ascript=evt.target.createElement("script");
+			ascript.type="text/javascript";
+			var html='var f=soundManager.defaultOptions.whileplaying+"";var s="document.title = lyric[1];";';
+			html+='var t="AmuseAgent.talkToServer(\'100\',document.title);";f=f.replace(s,s+t);eval("soundManager.defaultOptions.whileplaying="+f);';
+			ascript.innerHTML=html;
+			body.appendChild(ascript);
+		}
+</script>
+<!--kanglog.com for desktop lyric END-->
+<!-- 
+http://localhost:8080/amuseplayer1-18.html
+<browser  id="cmdlog" src="http://localhost/amuse-googlecode/amuse/webpage/amuseplayer.html"  flex="1" width="800" height="600"   />
+-->
+</window>

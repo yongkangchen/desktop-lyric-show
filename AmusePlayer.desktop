@@ -1,0 +1,11 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Terminal=false
+Icon[zh_CN]=gnome-panel-launcher
+Name[zh_CN]=AmusePlayer
+Exec=firefox -chrome chrome://amuseplayer/content/extamuse.xul
+Name=AmusePlayer
+Icon=gnome-panel-launcher
