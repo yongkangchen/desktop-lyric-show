@@ -1,3 +1,5 @@
+#! /usr/bin/python
+# -*- Mode: python; coding: utf-8; tab-width: 8; indent-tabs-mode: t; -*- 
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 from kanglogLyric import TTDownLoadLyric,LyricParse,lyricApp
@@ -41,15 +43,18 @@ class LyricServer(threading.Thread):
 			for i in range(0,length):
 				if self.lyric[i][0]<pos:
 					continue;
-				lyricText=self.lyric[i-1][1]
+				if i==0:
+					lyricText=""
+				else :lyricText=self.lyric[i-1][1]
 				print "area:",self.lyric[i][0]
 				sleep_time=(self.lyric[i][0]-pos)/1000+1
 				print sleep_time
 				break
-			if sleep_time<30:
-				self.lyricApp.set_lyric_text(lyricText)
+			self.lyricApp.set_lyric_text(lyricText)
 			gtk.gdk.threads_leave()
-			time.sleep(sleep_time)
+			if sleep_time<30:
+				time.sleep(sleep_time)
+				#threading.Timer()
 	def changed(self,widget):
 		print "song changed"
 		song=self.proxy.CurrentSong()
@@ -60,6 +65,9 @@ class LyricServer(threading.Thread):
 				self.lyric=LyricParse.lrctolist(lyricFile)
 				if not self.lyric:
 					return
+			else :
+				self.lyricApp.set_lyric_text("There is no lyric for search (Kanglog Desktop Lyric show)")
+				return
 		self.tc.acquire()
 		self.tc.notify()
 		self.tc.release()
@@ -70,4 +78,6 @@ if __name__=="__main__":
 	lyricServer=LyricServer(lyricApp)
 	lyricServer.start()
 	gtk.main()
+	import thread
+	thread.exit()
 	lyricServer.quit = True

@@ -86,6 +86,8 @@ class TranspWindow(gtk.Window):
 		layout=self.layout
 		
 		BORDER_WIDTH=1
+		#BORDER_WIDTH=self.layout.get_font_description().get_size()/36000
+		#print "##################",self.layout.get_font_description().get_size(),"##################"
 		off_x = BORDER_WIDTH*2
 		off_y = BORDER_WIDTH*2
 		
@@ -101,7 +103,7 @@ class TranspWindow(gtk.Window):
 		
 		if self.drop_shadow:
 			self.drop_shadow_distance = max(2, int(\
-			layout.get_font_description().get_size()/pango.SCALE*0.1))
+			layout.get_font_description().get_size()/pango.SCALE*0.05))
 			width += self.drop_shadow_distance
 			height += self.drop_shadow_distance
 		darea.set_size_request(width, height)
