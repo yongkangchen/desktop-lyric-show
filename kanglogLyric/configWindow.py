@@ -82,19 +82,20 @@ class ConfigWindow():
 			#print 'change lyric and save song tags:'
 			model,ite= self.treeview.get_selection().get_selected()
 			#print model.get_string_from_iter(ite)
-			Id=model.get_value(ite,0)
-			artist=model.get_value(ite,1)
-			title=model.get_value(ite,2)
-			lyric=TTDownLoadLyric.DownLoadLyric(
-				unicode(Id,"utf-8"),
-				unicode(artist,"utf-8"),
-				unicode(title,"utf-8")
-				)
-			#print lyric
-			if lyric:
-				self.setLyric(lyric)
-				if self.setSongProperty:
-					self.setSongProperty(artist,title)
+			if ite and model:
+				Id=model.get_value(ite,0)
+				artist=model.get_value(ite,1)
+				title=model.get_value(ite,2)
+				lyric=TTDownLoadLyric.DownLoadLyric(
+					unicode(Id,"utf-8"),
+					unicode(artist,"utf-8"),
+					unicode(title,"utf-8")
+					)
+				#print lyric
+				if lyric:
+					self.setLyric(lyric)
+					if self.setSongProperty:
+						self.setSongProperty(artist,title)
 		elif label_text=='Font':
 			#print 'save Font-desc and color:'
 			self.lyric.set_font_description(pango.FontDescription(self.fontbutton.get_font_name()))
