@@ -9,6 +9,8 @@ import pangocairo
 import gobject
 import threading
 import lyricConfig
+import configWindow
+osdLock = threading.RLock()
 class TransLayout(pango.Layout):
 	def __init__(self,text,transpWin):
 		pango.layout.__init__(self,text)
@@ -70,13 +72,14 @@ class TranspWindow(gtk.Window):
 		layout.set_text("kanglog lyric")
 		layout.emit("style-set",None)
 	def osd(self,w,e):
+		osdLock.acquire()
 		if e:
 			if e=="font_desc":
 				self.config.save_font_desc(self.layout.get_font_description().to_string())
-				print "save desc@@@@@@@@@@@@"
+				#print "save desc@@@@@@@@@@@@"
 			elif e=="font_fgcolor":
 				self.config.save_font_fgcolor(self.layout.get_data("fgcolor").to_string())
-				print "save color@@@@@@@@@@@@"
+				#print "save color@@@@@@@@@@@@"
 			pos_x,pos_y=self.get_position()
 			self.hide()
 		
@@ -154,10 +157,11 @@ class TranspWindow(gtk.Window):
 		if e:
 			self.move(pos_x,pos_y)
 			self.show()
+		osdLock.release()
 class LyricApp():
 	WINDOW_TYPE_HINT_LOCK=gtk.gdk.WINDOW_TYPE_HINT_SPLASHSCREEN
 	WINDOW_TYPE_HINT_UNLOCK=gtk.gdk.WINDOW_TYPE_HINT_TOOLBAR
-	def __init__(self):
+	def __init__(self,add_menu_items=None):
 		self.window=TranspWindow()
 		self.window.connect("delete-event",self.lock_action)
 		self.window.hide()
@@ -170,18 +174,23 @@ class LyricApp():
 
 		self.window.show_all()
 		
+		self.confWin=configWindow.ConfigWindow(self.lyric)
+		self.confWin.hide()
 		sIcon=gtk.status_icon_new_from_file("images/32.png")
 		sIcon.set_tooltip("Desktop lyric")
 		#sIcon.set_blinking(True);
 		
+		accel_group = gtk.AccelGroup()
+		item_factory=gtk.ItemFactory(gtk.Menu,"<main>",accel_group)
 		menu_items = (
-			( "/Font",None,         lambda a,b:FontDialog(self.lyric), 0, None ),
-			( "/Color",None,        lambda a,b:ColorDialog(self.lyric), 0, None ),
+			#( "/Font",None,        lambda a,b:FontDialog(self.lyric), 0, None ),
+			#( "/Color",None,       lambda a,b:ColorDialog(self.lyric), 0, None ),
+			( "/Config",None,       lambda a,b:self.confWin.show(), 0, None ),
 			( "/Lock",  None,       self.winLock, 0, None),
 			( "/Quit",  None,       gtk.main_quit, 0, None ),
 		)
-		accel_group = gtk.AccelGroup()
-		item_factory=gtk.ItemFactory(gtk.Menu,"<main>",accel_group)
+		if add_menu_items:
+			menu_items=add_menu_items+menu_items
 		item_factory.create_items(menu_items)
 
 		sIcon.connect("activate",self.lock_action)
@@ -222,42 +231,7 @@ class LyricApp():
 		if LrcText and LrcText!=self.lyric.get_text():
 			self.lyric.set_text(LrcText)
 			gobject.idle_add(self.lyric.emit,"style-set",None)
-			print LrcText
-class FontDialog():
-	def __init__(self,target):
-		fontseldlg = gtk.FontSelectionDialog("Font select")
-		
-		fontseldlg.set_font_name(target.get_font_description().to_string())
-		fontseldlg.show()
-		cancel_button=fontseldlg.get_cancel_button()
-		fontseldlg.connect("response",self.close_action)
-		self.target=target
-	def close_action(self,dialog,button):
-		if gtk.RESPONSE_OK==button:
-			self.target.set_font_description(pango.FontDescription(dialog.get_font_name()))
-			gobject.idle_add(self.target.emit,"style-set","font_desc")
-		dialog.destroy()
-class ColorDialog():
-	def __init__(self,target):
-		colorseldlg = gtk.ColorSelectionDialog("")
-		colorseldlg.connect("response",self.close_action)
-		colorsel = colorseldlg.get_color_selection()
-		colorsel.set_current_color(target.get_data("fgcolor"))
-		colorsel.set_has_opacity_control(True)
-		colorsel.set_has_palette(True)
-		colorseldlg.show()
-		self.target=target
-	def close_action(self,dialog,button):
-		if gtk.RESPONSE_OK==button:
-			self.target.set_data("fgcolor",dialog.get_color_selection().get_current_color())
-			gobject.idle_add(self.target.emit,"style-set","font_fgcolor")
-		dialog.destroy()
-import os
-def fop():
-	pid = os.fork()
-	if pid != 0:
-		os._exit(0)
-	os.system('python py_transparent_window.py')
+			#print LrcText
 if __name__=="__main__":
 	lyricApp=LyricApp()
 	gtk.main()

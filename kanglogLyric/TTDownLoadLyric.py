@@ -25,7 +25,7 @@ import codecs
 import urllib2
 import random
 from xml.dom.minidom import parse, parseString
-
+import re
 def DetectCharset(s):
 	if isinstance(s,unicode):
 		return s
@@ -107,6 +107,11 @@ def EncodeArtTit(str):
 	return rtn
 
 def SearchLyric(artist, title):
+	artist=DetectCharset(artist)
+	title=DetectCharset(title)
+	artist=re.sub("['‘]", '', artist)
+	title=re.sub("[['‘]]", '', title)
+	#print 'Searching ', artist, title, '...'
 	try:
 		theurl = 'http://lrcct2.ttplayer.com/dll/lyricsvr.dll?sh?Artist=%s&Title=%s&Flags=0' % (EncodeArtTit(artist.replace(' ','').lower()), EncodeArtTit(title.replace(' ','').lower()))
 		# print theurl
@@ -127,18 +132,18 @@ def SearchLyric(artist, title):
 	else:
 		#return handle.read()
 		xmlback=handle.read()
-		print xmlback
+		#print xmlback
 		dom1=parseString(xmlback)
 		list = dom1.getElementsByTagName('lrc')
-		#li = []
-		#for node in list:
-		#	li.append((node.getAttribute('id'),node.getAttribute('artist'),node.getAttribute('title')))
-		#print li
-		if list.length==0:
-			print "There is no lyric for search"
-			return False
-		node=list[0]
-		return node.getAttribute('id'),node.getAttribute('artist'),node.getAttribute('title')
+		li = []
+		for node in list:
+			li.append((node.getAttribute('id'),node.getAttribute('artist'),node.getAttribute('title')))
+		return li
+		#if list.length==0:
+		#	print "There is no lyric for search"
+		#	return False
+		#node=list[0]
+		#return node.getAttribute('id'),node.getAttribute('artist'),node.getAttribute('title')
 		#szList = ""
 		#for i in li:
 		#	szList += 'id=%s\tartist=%s\ttitle=%s\n' % (i[0], i[1], i[2])
@@ -146,6 +151,7 @@ def SearchLyric(artist, title):
 		#return szList
 
 def DownLoadLyric(Id, artist, title):
+	#print 'DownLoadLyric(%s, %s, %s):',Id,artist,title
 	try:
 		theurl = 'http://lrcct2.ttplayer.com/dll/lyricsvr.dll?dl?Id=%d&Code=%d&uid=01&mac=%012x' % (int(Id),CodeFunc(int(Id), DetectCharset(artist + title).encode('UTF8')), random.randint(0,0xFFFFFFFFFFFF))
 		print theurl
@@ -168,16 +174,14 @@ def DownLoadLyric(Id, artist, title):
 def GetTTLyric(artist,title):
 	#artist = artist.decode(locale.getdefaultlocale()[1])
 	#title = title.decode(locale.getdefaultlocale()[1])
-	artist=DetectCharset(artist)
-	title=DetectCharset(title)
-	print 'Searching ', artist, title, '...'
 	
 	result = SearchLyric(artist,title)
+	#print "result:",result
 	if result:
-		print result
-		lyr = DownLoadLyric(result[0],result[1],result[2])
-		#print lyr
+		#print result
+		lyr = DownLoadLyric(result[0][0],result[0][1],result[0][2])
 		return lyr
+		#print lyr
 	else :return False
 	#f = file('tmp.lyr','w')
 	#f.write(lyr)
