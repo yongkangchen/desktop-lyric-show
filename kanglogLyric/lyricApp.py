@@ -19,7 +19,6 @@ class TranspWindow(gtk.Window):
 	def __init__(self,type=gtk.WINDOW_TOPLEVEL):
 		gtk.Window.__init__(self,type)
 		self.set_keep_above(True)
-		
 		self.config=lyricConfig.LyricConfig()
 		
 		pos_x,pos_y=self.config.get_window_position()
@@ -165,7 +164,7 @@ class LyricApp():
 		self.window=TranspWindow()
 		self.window.connect("delete-event",self.lock_action)
 		self.window.hide()
-		self.window.set_type_hint(self.WINDOW_TYPE_HINT_UNLOCK)
+		self.window.set_type_hint(self.WINDOW_TYPE_HINT_LOCK)
 		#self.window.set_position(gtk.WIN_POS_CENTER)
 		
 		self.window.connect("enter-notify-event", self.move_action)
@@ -185,7 +184,6 @@ class LyricApp():
 		menu_items = (
 			#( "/Font",None,        lambda a,b:FontDialog(self.lyric), 0, None ),
 			#( "/Color",None,       lambda a,b:ColorDialog(self.lyric), 0, None ),
-			( "/Config",None,       lambda a,b:self.confWin.show(), 0, None ),
 			( "/Lock",  None,       self.winLock, 0, None),
 			( "/Quit",  None,       gtk.main_quit, 0, None ),
 		)

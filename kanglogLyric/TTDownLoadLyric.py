@@ -110,11 +110,11 @@ def SearchLyric(artist, title):
 	artist=DetectCharset(artist)
 	title=DetectCharset(title)
 	artist=re.sub("['‘]", '', artist)
-	title=re.sub("[['‘]]", '', title)
+	title=re.sub("['‘]", '', title)
 	#print 'Searching ', artist, title, '...'
 	try:
 		theurl = 'http://lrcct2.ttplayer.com/dll/lyricsvr.dll?sh?Artist=%s&Title=%s&Flags=0' % (EncodeArtTit(artist.replace(' ','').lower()), EncodeArtTit(title.replace(' ','').lower()))
-		# print theurl
+		print theurl
 		txheaders =  {'User-agent' : 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)'}
 		req = urllib2.Request(theurl, None, txheaders)
 		# create a request object

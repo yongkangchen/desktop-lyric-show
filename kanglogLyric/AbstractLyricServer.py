@@ -23,6 +23,7 @@ class AbstractLyricServer(threading.Thread):
 		self.tc=threading.Condition(threading.Lock())
 
 		menu_items = (
+			( "/Config",None,       lambda a,b:self.lyricApp.confWin.show(), 0, None ),
 			("/AdjustLyric",None,   self.adjustLyric ,0,None),
 		)
 		self.song=None
