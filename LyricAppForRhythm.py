@@ -53,10 +53,14 @@ class LyricGMB(AbstractLyricServer.AbstractLyricServer):
 		self.shell.setSongProperty(uri,'artist',dbus.String(artist, variant_level=1))
 		self.shell.setSongProperty(uri,'title',dbus.String(title, variant_level=1))
 		#self.shell.setSongProperty(uri,'album',dbus.String(album, variant_level=1))
+
 if __name__=="__main__":
 	#import os
 	#os.system('rhythmbox')
+
 	lyricServer=LyricGMB()
 	lyricServer.start()
+
 	gtk.main()
+	lyricServer.quit=True
 	thread.exit()

@@ -1,7 +1,6 @@
 #! /usr/bin/python
 # -*- Mode: python; coding: utf-8; tab-width: 8; indent-tabs-mode: t; -*- 
 from socket import *
-from time import ctime
 import urllib2
 import gobject
 import urllib

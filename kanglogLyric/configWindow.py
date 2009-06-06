@@ -10,7 +10,7 @@ class ConfigWindow():
 	def __init__(self,lyric):		
 		myGlade=gtk.glade.XML("conf/conf.glade")
 		conf_win=myGlade.get_widget("conf_win")
-		conf_win.hide()
+		#conf_win.hide()
 		conf_win.connect("delete-event",self.hide)
 
 		treeview=myGlade.get_widget("treeview")

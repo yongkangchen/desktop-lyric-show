@@ -109,8 +109,8 @@ def EncodeArtTit(str):
 def SearchLyric(artist, title):
 	artist=DetectCharset(artist)
 	title=DetectCharset(title)
-	artist=re.sub("['‘]", '', artist)
-	title=re.sub("['‘]", '', title)
+	artist=re.sub("['`‘]", ' ', artist)
+	title=re.sub("['`‘]", ' ', title)
 	#print 'Searching ', artist, title, '...'
 	try:
 		theurl = 'http://lrcct2.ttplayer.com/dll/lyricsvr.dll?sh?Artist=%s&Title=%s&Flags=0' % (EncodeArtTit(artist.replace(' ','').lower()), EncodeArtTit(title.replace(' ','').lower()))
